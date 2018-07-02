@@ -80,13 +80,13 @@ Tobi::Tobi()
 	digitalWrite(13, HIGH); 		// $ turn on LED
 
 	for (int i = 0; i < NUM_MOTORS; i++) {	// $$ Set motor indices to 0 to NUM_MOTORS 
-		_motorIndices[i] = i;
+		Tobi::_motorIndices[i] = i;
 	}
 	for (int i = 0; i < MAX_NUM_MOTORS; i++) { // $$ Set motor speeds to 0
-		_motorSpeed[i] = 0;
+		Tobi::_motorSpeed[i] = 0;
 	}
 
-	filterInputs(false);	// $$ Turn off filters to start
+	Tobi::filterInputs(false);	// $$ Turn off filters to start
 }
 
 /*  $         ENABLE
@@ -361,7 +361,7 @@ OUTPUTS:  - None.
 UPDATES:  - None.
 EFFECTS:  - Serial communication set up.
 */
-void serialSetup() {
+void Tobi::serialSetup() {
 	Serial.begin(9600);
 	Serial.setTimeout(10);
 	int i = 0; int waitTime = 500; // wait 5 seconds; if Serial comm isn't started by then, move on
@@ -377,9 +377,9 @@ OUTPUTS:  - None.
 UPDATES:  - TobiPro::_motorIndices
 EFFECTS:  - None.
 */
-void setMotorIndices(int* motInd) {
+void Tobi::setMotorIndices(int* motInd) {
 	for (int i = 0; i < NUM_MOTORS; i++) {
-		_motorIndices[i] = motInd[i];
+		Tobi::_motorIndices[i] = motInd[i];
 	}
 }
 
@@ -391,8 +391,8 @@ OUTPUTS:  - None.
 UPDATES:  - TobiPro::filter.
 EFFECTS:  - None.
 */
-void filterInputs(bool onOff) {
-	filter.onOff(onOff);
+void Tobi::filterInputs(bool onOff) {
+	Tobi::filter.onOff(onOff);
 }
 
 /*      UPDATE()
@@ -402,9 +402,9 @@ OUTPUTS:  - None.
 UPDATES:  - TobiPro::_motorSpeed.
 EFFECTS:  - None.
 */
-void update() {
+void Tobi::update() {
 	for (int i = 0; i < NUM_MOTORS; i++) {
-		_motorSpeed[_motorIndices[i]] = calcSpeed(i); // calc speed; also updates filters
+		Tobi::_motorSpeed[Tobi::_motorIndices[i]] = Tobi::calcSpeed(i); // calc speed; also updates filters
 	}
 }
 
@@ -415,8 +415,8 @@ OUTPUTS:  - None.
 UPDATES:  - None.
 EFFECTS:  - Suspends code execution for 1/Fs seconds (TobiPro::_dt).
 */
-void srDelay() {
-	delay(_dt);
+void Tobi::srDelay() {
+	Tobi::delay(_dt);
 }
 
 /*      GETSPEED()
@@ -426,8 +426,8 @@ OUTPUTS:  - int motorSpeed.
 UPDATES:  - None.
 EFFECTS:  - None.
 */
-int getSpeed(int motor) {
-	return _motorSpeed[motor];
+int Tobi::getSpeed(int motor) {
+	return Tobi::_motorSpeed[motor];
 }
 
 /*     CALCSPEED()
@@ -438,29 +438,29 @@ OUTPUTS:  - int rawSpeed
 UPDATES:  - None.
 EFFECTS:  - None.
 */
-int calcSpeed(int motor) {
+int Tobi::calcSpeed(int motor) {
 
 	// read encoder of desired motor
-	int thisVal = readEncoder(motor);
+	int thisVal = Tobi::readEncoder(motor);
 	float thisTime = getTime();
 
 	// get last motor value and update last values
-	int lastVal = _lastEnc[motor];
-	float lastTime = _lastTime[motor];
-	_lastEnc[motor] = thisVal;
-	_lastTime[motor] = thisTime;
+	int lastVal = Tobi::_lastEnc[motor];
+	float lastTime = Tobi::_lastTime[motor];
+	Tobi::_lastEnc[motor] = thisVal;
+	Tobi::_lastTime[motor] = thisTime;
 
-	int maxVal = maxEncoderVals[motor];
+	int maxVal = Tobi::maxEncoderVals[motor];
 
 	int rawSpeed;
 	// edge cases -- if rolled over, just use last speed
-	if (fabs(lastVal - thisVal) > abs(lastVal)*0.25)        rawSpeed = _motorSpeed[motor];
+	if (fabs(lastVal - thisVal) > abs(lastVal)*0.25)        rawSpeed = Tobi::_motorSpeed[motor];
 	else                                                   rawSpeed = (thisVal - lastVal) / (thisTime - lastTime);
 
 	// update filter, even if off
-	filter.input(motor, rawSpeed);
+	Tobi::filter.input(motor, rawSpeed);
 
-	if (filter.isOn(motor))           return filter.output(motor);
+	if (Tobi::filter.isOn(motor))           return Tobi::filter.output(motor);
 	else                              return rawSpeed;
 }
 
@@ -471,8 +471,8 @@ OUTPUTS:  - None.
 UPDATES:  - TobiPro::_dt.
 EFFECTS:  - None.
 */
-void setSampleRate(int Fs) {
-	_dt = 1000 * (1 / Fs);
+void Tobi::setSampleRate(int Fs) {
+	Tobi::_dt = 1000 * (1 / Fs);
 }
 
 /*      SETSPEED()
@@ -482,10 +482,10 @@ OUTPUTS:  - None.
 UPDATES:  - TobiPro::_motorSpeed[motor].
 EFFECTS:  - Changes servo angular velocity.
 */
-void setSpeed(int motor, float percent) {
+void Tobi::setSpeed(int motor, float percent) {
 	int pwm = (int)(percent * 2.55);
-	setPwm(motor, pwm);
-	_motorSpeed[_motorIndices[motor]] = pwm;
+	Tobi::setPwm(motor, pwm);
+	Tobi::_motorSpeed[Tobi::_motorIndices[motor]] = pwm;
 }
 
 /////////////////////////// TOBI_CUSTOM METHODS ////////////////////////////
@@ -497,10 +497,10 @@ INPUTS: 	- (int) speed	-> 	number 0 to 100 in percentage of max speed.
 OUTPUTS: 	- None
 UPDATED:	- _pwmPin[0] and _pwmPin[1]
 */
-void TobiCustom::driveFwd(int percentSpeed) {
+void Tobi::driveFwd(int percentSpeed) {
 	int spd = percentSpeed * 255 / 100; // calculate percentage on 0-255 scale
-	TobiCustom::setPwm(WHEEL0, spd);
-	TobiCustom::setPwm(WHEEL1, spd);
+	Tobi::setPwm(WHEEL0, spd);
+	Tobi::setPwm(WHEEL1, spd);
 
 }
 
