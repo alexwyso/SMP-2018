@@ -383,41 +383,41 @@ void Tobi::setMotorIndices(int* motInd) {
 	}
 }
 
-/*      FILTERINPUTS()
-Sets TobiPro to filter or not filter encoder values with a two pole low pass filter, defined
-in TobiFilterManager.
-INPUTS:   - bool onOff (true for filtering on, false for filtering off).
-OUTPUTS:  - None.
-UPDATES:  - TobiPro::filter.
-EFFECTS:  - None.
-*/
-void Tobi::filterInputs(bool onOff) {
-	Tobi::filter.onOff(onOff);
-}
+// /*      FILTERINPUTS()
+// Sets TobiPro to filter or not filter encoder values with a two pole low pass filter, defined
+// in TobiFilterManager.
+// INPUTS:   - bool onOff (true for filtering on, false for filtering off).
+// OUTPUTS:  - None.
+// UPDATES:  - TobiPro::filter.
+// EFFECTS:  - None.
+// */
+// void Tobi::filterInputs(bool onOff) {
+// 	Tobi::filter.onOff(onOff);
+// }
 
-/*      UPDATE()
-Calculates speed and updates filters for each motor.
-INPUTS:   - None.
-OUTPUTS:  - None.
-UPDATES:  - TobiPro::_motorSpeed.
-EFFECTS:  - None.
-*/
-void Tobi::update() {
-	for (int i = 0; i < NUM_MOTORS; i++) {
-		Tobi::_motorSpeed[Tobi::_motorIndices[i]] = Tobi::calcSpeed(i); // calc speed; also updates filters
-	}
-}
+// /*      UPDATE()
+// Calculates speed and updates filters for each motor.
+// INPUTS:   - None.
+// OUTPUTS:  - None.
+// UPDATES:  - TobiPro::_motorSpeed.
+// EFFECTS:  - None.
+// */
+// void Tobi::update() {
+// 	for (int i = 0; i < NUM_MOTORS; i++) {
+// 		Tobi::_motorSpeed[Tobi::_motorIndices[i]] = Tobi::calcSpeed(i); // calc speed; also updates filters
+// 	}
+// }
 
-/*      SRDELAY()
-Pauses code execution for the period corresponding to TobiPro::_dt, the inverse of your sample rate.
-INPUTS:   - None.
-OUTPUTS:  - None.
-UPDATES:  - None.
-EFFECTS:  - Suspends code execution for 1/Fs seconds (TobiPro::_dt).
-*/
-void Tobi::srDelay() {
-	Tobi::delay(_dt);
-}
+// /*      SRDELAY()
+// Pauses code execution for the period corresponding to TobiPro::_dt, the inverse of your sample rate.
+// INPUTS:   - None.
+// OUTPUTS:  - None.
+// UPDATES:  - None.
+// EFFECTS:  - Suspends code execution for 1/Fs seconds (TobiPro::_dt).
+// */
+// void Tobi::srDelay() {
+// 	Tobi::delay(_dt);
+// }
 
 /*      GETSPEED()
 Returns the speed of the specified motor in encoder_vals/sec.
@@ -430,39 +430,39 @@ int Tobi::getSpeed(int motor) {
 	return Tobi::_motorSpeed[motor];
 }
 
-/*     CALCSPEED()
-Get the speed of a particular motor. Returns filtered speed if filter is on, and raw speed if filter
-is off. The speed is returned in units of change in encoder values per second.
-INPUTS:   - int motor
-OUTPUTS:  - int rawSpeed
-UPDATES:  - None.
-EFFECTS:  - None.
-*/
-int Tobi::calcSpeed(int motor) {
+// /*     CALCSPEED()
+// Get the speed of a particular motor. Returns filtered speed if filter is on, and raw speed if filter
+// is off. The speed is returned in units of change in encoder values per second.
+// INPUTS:   - int motor
+// OUTPUTS:  - int rawSpeed
+// UPDATES:  - None.
+// EFFECTS:  - None.
+// */
+// int Tobi::calcSpeed(int motor) {
 
-	// read encoder of desired motor
-	int thisVal = Tobi::readEncoder(motor);
-	float thisTime = getTime();
+// 	// read encoder of desired motor
+// 	int thisVal = Tobi::readEncoder(motor);
+// 	float thisTime = getTime();
 
-	// get last motor value and update last values
-	int lastVal = Tobi::_lastEnc[motor];
-	float lastTime = Tobi::_lastTime[motor];
-	Tobi::_lastEnc[motor] = thisVal;
-	Tobi::_lastTime[motor] = thisTime;
+// 	// get last motor value and update last values
+// 	int lastVal = Tobi::_lastEnc[motor];
+// 	float lastTime = Tobi::_lastTime[motor];
+// 	Tobi::_lastEnc[motor] = thisVal;
+// 	Tobi::_lastTime[motor] = thisTime;
 
-	int maxVal = Tobi::maxEncoderVals[motor];
+// 	int maxVal = Tobi::maxEncoderVals[motor];
 
-	int rawSpeed;
-	// edge cases -- if rolled over, just use last speed
-	if (fabs(lastVal - thisVal) > abs(lastVal)*0.25)        rawSpeed = Tobi::_motorSpeed[motor];
-	else                                                   rawSpeed = (thisVal - lastVal) / (thisTime - lastTime);
+// 	int rawSpeed;
+// 	// edge cases -- if rolled over, just use last speed
+// 	if (fabs(lastVal - thisVal) > abs(lastVal)*0.25)        rawSpeed = Tobi::_motorSpeed[motor];
+// 	else                                                   rawSpeed = (thisVal - lastVal) / (thisTime - lastTime);
 
-	// update filter, even if off
-	Tobi::filter.input(motor, rawSpeed);
+// 	// update filter, even if off
+// 	Tobi::filter.input(motor, rawSpeed);
 
-	if (Tobi::filter.isOn(motor))           return Tobi::filter.output(motor);
-	else                              return rawSpeed;
-}
+// 	if (Tobi::filter.isOn(motor))           return Tobi::filter.output(motor);
+// 	else                              return rawSpeed;
+// }
 
 /*      SETSAMPLERATE()
 Sets sample rate of TobiPro object.
@@ -499,8 +499,8 @@ UPDATED:	- _pwmPin[0] and _pwmPin[1]
 */
 void Tobi::driveFwd(int percentSpeed) {
 	int spd = percentSpeed * 255 / 100; // calculate percentage on 0-255 scale
-	Tobi::setPwm(WHEEL0, spd);
-	Tobi::setPwm(WHEEL1, spd);
+	Tobi::setPwm(0, spd);
+	Tobi::setPwm(1, spd);
 
 }
 
