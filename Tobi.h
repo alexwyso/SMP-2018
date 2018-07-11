@@ -132,8 +132,8 @@ class Tobi
 			OUTPUTS: 	- None.
 			UPDATED:	- maxEncoderVals
 		*/
-		void Tobi::calibrateEncoders(int* maxEncoderVals, int numEncoders);
-		void Tobi::calibrateEncoders(int* maxEncoderVals, int numEncoders, int* encoderIndices);
+		void calibrateEncoders(int* maxEncoderVals, int numEncoders);
+		void calibrateEncoders(int* maxEncoderVals, int numEncoders, int* encoderIndices);
 
 		/*  $         READENCODER
 			Call to read the value reported by the encoder for a specific leg. Method is necessary
@@ -297,12 +297,6 @@ class Tobi
 		int _motorIndices[NUM_MOTORS];		//
 
 		/////////////////////////// $$ TOBI_FILTER_MANAGER FIELDS $$ ////////////////////////////
-
-		bool _on[NUM_MOTORS];							// arraying storing which motors have filters on
-		OSCILLATOR_TYPE filterType;						//
-		FilterTwoPole _filter[NUM_MOTORS];				//
-		RunningStatistics _filterStats[NUM_MOTORS];		//
-		RunningStatistics _inputStats[NUM_MOTORS];		//
 		
 		////////////////////////// $ METHODS ////////////////////////////
 		
