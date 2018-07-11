@@ -36,6 +36,7 @@ $ Additional methods from libraries
 
 const float default3dbFreq = 0.25;
 const float defaultWinLen = 50;
+int maxEncoderValues[MAX_NUM_MOTORS];	// stores the motor speed of each motor
 
 enum STATS_TYPE {
 	INPUT_STATS,
