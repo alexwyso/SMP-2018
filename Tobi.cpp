@@ -263,7 +263,7 @@ INPUTS: 	- int* maxEncoderVals, int NUM_MOTORS (optional int* encoderIndices)
 OUTPUTS: 	- None.
 UPDATED:	- maxEncoderVals
 */
-void Tobi::calibrateEncoders() {
+void Tobi::calibrateEncoders(int* maxEncoderVals, int numEncoders) {
 	if (Serial) Serial.println("Calibrating encoders...");
 	for (int i = 0; i < NUM_MOTORS; i++) {
 		// set motor to max speed
@@ -283,7 +283,7 @@ void Tobi::calibrateEncoders() {
 	}
 	if (Serial) Serial.println("Calibration complete.\n");
 }
-void Tobi::calibrateEncoders(int* encoderIndices) {
+void Tobi::calibrateEncoders(int* maxEncoderVals, int numEncoders, int* encoderIndices) {
 	if (Serial) Serial.println("Calibrating encoders...");
 	for (int i = 0; i < NUM_MOTORS; i++) {
 		// set motor to max speed
