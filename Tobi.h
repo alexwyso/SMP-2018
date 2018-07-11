@@ -27,7 +27,6 @@ $ Additional methods from libraries
 #include "Arduino.h"
 #include <Wire.h>
 #include "math.h"
-#include <Filters.h>
 
 #define MAX_NUM_MOTORS 6
 
